@@ -1,9 +1,6 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const fs = require('fs');
-const writeStream = fs.createWriteStream('article.csv');
-
-writeStream.write(`Title,Link,Count \n`);
 
 let url = 'https://www.reviewgeek.com/';
 let title = "";
@@ -25,7 +22,9 @@ request(url, (error, response, html) => {
                         const word = $(el).text()
                         count += word.split(" ").length;
                     })
-                    writeStream.write(`${title}, ${link}, ${count} \n`);
+                    fs.appendFile('article.csv', `${title}, ${link}, ${count} \n`, (err) => {
+                        if (err) throw err;
+                    });
                     count = 0;
                 }
             })
